@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Assignment :: Coviam</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<style>
+		*{
+			box-sizing: border-box;
+		}
+		body{
+			background: #333;
+		}
+
+		.place{
+			width: 200px;
+			height: 200px;
+			display: table;
+			margin: 0 auto;
+			background: #fff;
+		}
+
+		.place li{
+			width: 50px;
+			list-style: none;
+			height: 50px;
+			float: left;
+			background: green;
+			border: 1px solid #333;
+		}
+
+		.place li span{
+		    text-align: center;
+		    font-size: 25px;
+		    font-weight: 700;
+		    display: block;
+		    padding: 11px 0 0;
+		}
+
+		.match, .not-match{
+			width: 200px;
+			margin: 0 auto;
+			background: tomato;
+			color: #fff;
+			text-align: center;
+			font-size: 17px;
+			display: none;
+			padding: 5px 0;
+		}
+
+		.not-match{
+			background: red;
+		}
+
+		.score-box{
+			width: 200px;
+			margin: 150px auto 0;
+			background: #fff;
+			padding: 7px;
+			text-align: center;
+			font-weight: 700;
+		}
+
+		.animate {
+			transform: rotateY(180deg);
+			transition: 0.5s ease;
+		}
+
+		.animateSpan{
+			transform: rotateY(-180deg);
+			transition: 0.5s ease;
+		}
+
+	</style>
+</head>
+<body>
+
+<div class="score-box">SCORE: <span class="score">0</span></div>
+  <div class="place" id="place">
+</div>
+<div class="match">Matched !! +2</div>
+<div class="not-match">Oops !! -1</div>
+
+<script>
+
+var arr = [1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8];
+
+var x = arr.sort(function(a,b){
+	return Math.floor(Math.random() * arr.length);
+});
+
+for(var i = 0; i < x.length; i++){
+	var linew = "<li>" + "<span>" + x[i] + "</span>" + "</li>";
+	$(".place").append(linew);
+}
+
+console.log(x);
+
+var guess1 = "";
+var guess2 = "";
+var count = 0;
+var score = parseInt($(".score").text());
+
+$("li").find("span").hide();
+
+$("li").click(function() {
+  	if ( count < 2 ) {
+    	count++;
+    	$(this).find("span").show();
+    	$(this).addClass('animate');
+    	$(this).find("span").addClass('animateSpan');
+
+	    // First guess
+	    if (count === 1 ) { 
+	      	guess1 = $(this).find("span").text(); 
+	    }   
+    
+	    // Second guess
+	    else { 
+
+	    	// Match Case
+	      	guess2 = $(this).find("span").text(); 
+	    
+			if (guess1 === guess2) { 
+				console.log("Matched !");
+
+				$(".match").show(10);   
+				score += 2; 
+				$(".score").text(score); 
+
+				setTimeout(function() {
+				  $(".match").hide(); 
+				  $("li:contains("+guess1+")").css("background", "#333");
+				  $("li:contains("+guess1+")").find("span").hide();
+				}, 1000);
+
+				$("li:contains("+guess1+")").off("click");
+			} 
+			// Not Matched 
+			else { 
+				console.log("Not Matched !");
+				score -= 1; 
+				$(".score").text(score); 
+				$(".not-match").show(10);
+				setTimeout(function() {
+					$(".not-match").hide();
+				  $("li").find("span").hide();
+				}, 1000);
+			}
+			count = 0; 
+	    }
+  	}
+});
+
+</script>
+
+</body>
+</html>
